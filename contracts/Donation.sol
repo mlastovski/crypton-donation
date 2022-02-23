@@ -25,7 +25,6 @@ contract Donate {
     }
 
     function addContribution(address _contributorAddress, uint256 _targetAmount) public {
-        if (contributionStructExists(_contributorAddress)) revert();
         contributions[_contributorAddress].contributorAddress = _contributorAddress;
         contributions[_contributorAddress].amountContributed = _targetAmount;
         contributions[_contributorAddress].exists = true;
@@ -33,16 +32,7 @@ contract Donate {
     }
 
     function modifyContribution(address _contributorAddress, uint256 _targetAmount) public {
-        if (!contributionStructExists(_contributorAddress)) revert();
         contributions[_contributorAddress].amountContributed += _targetAmount;
-    }
-
-    function donate() public payable {
-        if (!contributionStructExists(msg.sender)) {
-            addContribution(msg.sender, msg.value);
-        } else {
-            modifyContribution(msg.sender, msg.value);
-        }
     }
 
     receive() external payable {

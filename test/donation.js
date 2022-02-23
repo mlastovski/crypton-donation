@@ -43,10 +43,8 @@ describe("Donation contract", function () {
       value: ethers.utils.parseEther('2')
     }
 
-    const sendFirst = await owner.sendTransaction(tx);
-    const sendSecond = await addr2.sendTransaction(tx);
-    await sendFirst;
-    await sendSecond;
+    await addr2.sendTransaction(tx);
+    await addr2.sendTransaction(tx);
     const balance = await ethers.provider.getBalance(donationContract.address);
     expect(ethers.utils.formatEther(balance)).to.equal('4.0');
   });
@@ -61,5 +59,32 @@ describe("Donation contract", function () {
     } catch(err) {}
 
     expect(withdraw).to.equal(false);
+  });
+
+  it("Tests view functions", async function () {
+    await donationContract.connect(addr1).getAllContributors();
+    await donationContract.connect(addr1).getTotalAmountContributedByAddress(addr2.address);
+    const contract = require("../artifacts/contracts/Donation.sol/Donate.json");
+
+    const donationNew = new ethers.Contract(
+      donationContract.address, 
+      contract.abi, 
+      owner
+    );
+
+    await donationNew;
+    
+    const tx = {
+      to: donationContract.address,
+      value: ethers.utils.parseEther('2')
+    }
+
+    await addr1.sendTransaction(tx);
+    await donationContract.connect(addr1).getAllContributors();
+    await addr2.sendTransaction(tx);
+    await donationContract.connect(addr1).getTotalAmountContributedByAddress(addr2.address);
+    await addr2.sendTransaction(tx);
+    await donationContract.connect(addr1).getTotalAmountContributedByAddress(addr2.address);
+    await donationContract.connect(addr1).getAllContributors();
   });
 });
