@@ -20,11 +20,11 @@ contract Donate {
     mapping(address => Contribution) contributions;
     address[] contributionList;
 
-    function contributionStructExists(address _contributorAddress) private view returns (bool) {
+    function contributionStructExists(address _contributorAddress) public view returns (bool) {
         return contributions[_contributorAddress].exists;
     }
 
-    function addContribution(address _contributorAddress, uint256 _targetAmount) private {
+    function addContribution(address _contributorAddress, uint256 _targetAmount) public {
         if (contributionStructExists(_contributorAddress)) revert();
         contributions[_contributorAddress].contributorAddress = _contributorAddress;
         contributions[_contributorAddress].amountContributed = _targetAmount;
@@ -32,7 +32,7 @@ contract Donate {
         contributionList.push(_contributorAddress);
     }
 
-    function modifyContribution(address _contributorAddress, uint256 _targetAmount) private {
+    function modifyContribution(address _contributorAddress, uint256 _targetAmount) public {
         if (!contributionStructExists(_contributorAddress)) revert();
         contributions[_contributorAddress].amountContributed += _targetAmount;
     }
